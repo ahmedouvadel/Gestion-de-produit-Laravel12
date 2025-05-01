@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -41,7 +42,7 @@ Route::post('/signup', function (Request $request) {
     $user = User::create([
         'name' => $validated['name'],
         'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
+        'password' => Hash::make(value: $validated['password']),
     ]);
 
     return response()->json([
@@ -67,6 +68,9 @@ Route::middleware('auth:sanctum')->post('/logout', function (Request $request) {
 
 // 🎯 3. Routes API protégées avec Sanctum
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('categories', CategoryController::class);
 });
+
